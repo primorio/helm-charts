@@ -318,7 +318,10 @@ spec:
           - name: node.roles
             value: "{{ template "elasticsearch.roles" . }}"
           {{- end }}
-          {{- if lt (int (include "elasticsearch.esMajorVersion" .)) 7 }}
+          {{- if eq (int .Values.replicas) 1 }}
+          - name: discovery.type
+            value: "single-node"
+          {{- else if lt (int (include "elasticsearch.esMajorVersion" .)) 7 }}
           - name: discovery.zen.ping.unicast.hosts
             value: "{{ template "elasticsearch.masterService" . }}-headless"
           {{- else }}
